@@ -16,3 +16,6 @@ export const getAspectValue = (label) => {
   const data = ASPECT_OPTIONS.find(o => o.label.includes(label))
   return data !== undefined ? data.value : -1;
 }
+export function getAspectLabel(v){ const f=ASPECT_OPTIONS.find(a=>a.value===v); return f?f.label:v; }
+
+export function getAspectValue(l){ const f=ASPECT_OPTIONS.find(a=>a.label===l||String(a.value)===String(l)); return f?f.value:l; }

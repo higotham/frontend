@@ -309,27 +309,21 @@ export default function useCanvasDrawing({
     setIsDrawing(true); schedulePresent();
   };
 
-  
-const onPointerMove = (e) => {
-  // UI cursor update (last event is fine for visual)
-  updateCursor({ ...toCssXY(e), visible: true });
+  const onPointerMove = (e) => {
+    updateCursor({ ...toCssXY(e), visible:true });
 
-  // Cancel long-press if moved
-  if (lpRef.current.timer) {
-    const dx = Math.abs((e.clientX ?? 0) - lpRef.current.startX);
-    const dy = Math.abs((e.clientY ?? 0) - lpRef.current.startY);
-    if (dx > MOVE_TOL || dy > MOVE_TOL) { clearTimeout(lpRef.current.timer); lpRef.current.timer = null; }
-  }
+    // 롱프레스 취소(이동)
+    if (lpRef.current.timer) {
+      const dx = Math.abs((e.clientX ?? 0) - lpRef.current.startX);
+      const dy = Math.abs((e.clientY ?? 0) - lpRef.current.startY);
+      if (dx > MOVE_TOL || dy > MOVE_TOL) { clearTimeout(lpRef.current.timer); lpRef.current.timer = null; }
+    }
 
-  if (!isDrawing) return;
+    if (!isDrawing) return;
+    // 일부 환경에서 buttons=0 튐 → 마우스만 안전 종료, 터치/펜은 유지
+    if ('buttons' in e && e.buttons===0 && e.pointerType === 'mouse') { onPointerUp(e); return; }
 
-  // In some browsers mouse may report buttons=0 spuriously
-  if ('buttons' in e && e.buttons === 0 && e.pointerType === 'mouse') { onPointerUp(e); return; }
-
-  const batch = (typeof e.getCoalescedEvents === 'function') ? e.getCoalescedEvents() : [e];
-
-  for (const ev of batch) {
-    const { x, y } = toDocXY(ev);
+    const { x, y } = toDocXY(e);
 
     if (tool === 'eraser') {
       const cur = erasingRef.current || { targetIds: new Set(), stroke: { size: cssToDoc((eraserSize ?? size) || 8), points: [] } };
@@ -340,19 +334,15 @@ const onPointerMove = (e) => {
         if (!cur.targetIds.has(o.id)) { (o.erasers || (o.erasers = [])).push(cur.stroke); cur.targetIds.add(o.id); }
       }
       erasingRef.current = cur;
-      continue;
+      schedulePresent(); return;
     }
 
-    const cur = creatingRef.current; if (!cur || cur.type !== 'path') continue;
+    const cur = creatingRef.current; if (!cur || cur.type!=='path') return;
     cur.points.push({ x, y });
     const bb = bboxOfPath(cur.points, cur.strokeWidth);
-    cur.x = bb.x; cur.y = bb.y; cur.w = bb.w; cur.h = bb.h;
-  }
-
-  // single present for the whole batch
-  schedulePresent();
-};
-
+    cur.x=bb.x; cur.y=bb.y; cur.w=bb.w; cur.h=bb.h;
+    schedulePresent();
+  };
 
   const onPointerUp = (e) => {
     if (lpRef.current.timer) { clearTimeout(lpRef.current.timer); lpRef.current.timer = null; }
@@ -440,4 +430,20 @@ const onPointerMove = (e) => {
     onPointerEnter, onPointerLeave, onPointerDown, onPointerMove, onPointerUp,
     undo, clear, historyCount, toDataURL, cursor, loadFromDataURL, setAspectRatio,
   };
+}
+
+// ────────────────────────────────────────── Offscreen brush tip (perf)
+function getBrushTipCanvas(sizePx=16){
+  const s = Math.max(2, Math.round(sizePx));
+  const key = '__brush_tip_'+s;
+  if (!window[key]){
+    const oc = document.createElement('canvas');
+    oc.width = oc.height = s;
+    const octx = oc.getContext('2d');
+    const r = s/2;
+    octx.beginPath(); octx.arc(r, r, r, 0, Math.PI*2);
+    octx.fillStyle = '#000'; octx.fill();
+    window[key] = oc;
+  }
+  return window[key];
 }

@@ -244,7 +244,7 @@ export default function KSamplerControl({
         </Modal.Body>
 
         <Modal.Footer>
-          <Button className="dock-btn" style={{ background: 'var(--orange)', color: '#fff', borderColor: 'transparent' }} onClick={()=> setOpen(false)}>적용</Button>
+          <Button className="dock-btn" style={{ background: 'var(--orange)', color:'#fff', borderColor:'transparent' }} onClick={()=> setOpen(false)}>적용</Button>
         </Modal.Footer>
       </Modal>
     </div>
