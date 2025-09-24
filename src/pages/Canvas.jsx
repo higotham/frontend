@@ -31,7 +31,7 @@ export default function Canvas() {
   const resultKey = resultProps?.url || 'empty';
 
   return (
-    <div className={pageClass} data-result-open={resultProps.open ? 'true' : 'false'} style={{ position: 'relative', minHeight: '100vh' }}>
+    <div className={pageClass} data-result-open={resultProps.open ? 'true' : 'false'}>
       {/* 캔버스: 화면 꽉 채움 (CSS에서 .canvas-page/.stage 처리) */}
       <Stage {...stageProps} overlay={<GuideOverlay />} />
 

@@ -309,6 +309,7 @@ input[disabled]{ background:#f6f8f6; color:#667; cursor:not-allowed }
 .canvas-page .paint-canvas{
   width:100%; height:100%;
   display:block; touch-action:none; cursor:crosshair;
+  z-index: 1445;
 }
 
 /* 입력 공통 */
@@ -344,14 +345,29 @@ input[disabled]{ background:#f6f8f6; color:#667; cursor:not-allowed }
   transition: transform .26s ease, bottom .26s ease;
 }
 .canvas-page .dock.is-open{ bottom: var(--dock-bottom, 18px); transform: translateX(-50%) }
-.canvas-page .dock.is-closed{ bottom:-130px; transform: translateX(-50%) }
+.canvas-page .dock.is-closed{transform: translateX(-50%); z-index:-1; }
 
 .canvas-page .dock-inner{
   background:#fff; border:1px solid #e6ebef; border-radius:14px;
-  box-shadow:0 12px 26px rgba(0,0,0,.18); padding:10px; transition: transform .26s ease;
+  box-shadow:0 12px 26px rgba(0,0,0,.18);
+  padding:10px; transition: transform .26s ease;
   position:relative; overflow:visible;
+  z-index: var(--aiw-z-dock) !important;
+
+  display: grid;
+  grid-template-columns: minmax(0,1fr) clamp(168px, 42vw, 220px);
+  column-gap: .5rem;
+  row-gap: .5rem;
+  align-items: start;
 }
-.canvas-page .prompt{ width:100%; resize:none; border:0; outline:none; font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Noto Sans KR,sans-serif; }
+.canvas-page .prompt{
+  grid-column: 1 / -1;    /* 두 컬럼 가로 전체 사용 */
+  grid-row: 2;
+  width: 100%;
+  resize: none;
+  border: 0; outline: none;
+  font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", sans-serif;
+}
 .canvas-page .dock-actions{ display:flex; align-items:center; gap:10px; justify-content:flex-end; margin-top:8px; }
 .canvas-page .btn-generate{ padding:10px 14px; border:0; border-radius:12px; background:var(--kiwi,#7ED957); color:#0b3d14; font-weight:800; }
 .canvas-page .btn-generate:disabled{ background:#e6e9ed; color:#9aa4ae; cursor:not-allowed }
@@ -703,42 +719,54 @@ input[disabled]{ background:#f6f8f6; color:#667; cursor:not-allowed }
 .sbw-nav-right{ justify-self: start; }
 
 /* Canvas */
+/* Canvas */
 .sbw-canvas-wrap{
-  position: relative;
-  width:100%;
-  display:grid;             /* 항상 중앙 정렬 */
-  place-items:center;
+  display:flex; align-items:flex-start; justify-content:center;
+  padding:10px 0;
 }
+
+/* 메인 카드: 고정 높이 제거, 이미지 크기에 맞춰 자동 */
 .sbw-canvas{
   position: relative;
-  width: min(100%, 1100px);
-  max-height: min(70vh, 70dvh);
-  aspect-ratio: var(--sbw-ar, 16/9);
-  background: var(--muted, #eef4ef);
-  border: 1px solid rgba(0,0,0,.06);
-  border-radius: 12px; overflow: hidden;
-  display:grid; place-items:center;
-  cursor: pointer; outline: none;
+  display:inline-block;
+  background: var(--bg,#fff);
+  color: var(--ink,#1b1f23);
+  border: 1px solid var(--ui-border, rgba(0,0,0,.10));
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+  max-width: min(100%, 1200px);
 }
-.sbw-canvas:hover{ outline: 2px dashed rgba(0,0,0,.15); outline-offset: -6px; }
-.sbw-canvas:focus-visible{ box-shadow: 0 0 0 3px rgba(255,122,0,.35); }
-.sbw-canvas::after{
-  content: "클릭하여 이미지 선택";
-  position: absolute; right: 10px; bottom: 10px;
-  font-size: 12px; padding: 6px 8px; border-radius: 8px;
-  background: rgba(0,0,0,.55); color: #fff;
-  opacity: 0; transform: translateY(4px);
-  transition: .18s ease; pointer-events: none;
-}
-.sbw-canvas:hover::after{ opacity: 1; transform: translateY(0); }
 
-/* 메인 카드 이미지는 카드 안에 꽉 차도록 (여백 금지) */
-.sbw-canvas-img{ width:100%; height:100%; object-fit:cover; display:block; }
+/* 이미지 래퍼 */
+.sbw-media{
+  position: relative;
+}
+
+/* ★ 메인 카드 이미지는 '전부 보이도록' contain + 뷰포트 상한 */
+.sbw-canvas-img{
+  display:block;
+  width:auto; height:auto;
+  max-width:100%; max-height:70vh;
+  object-fit:contain; object-position:center;
+  background:#000;
+}
+
+/* (이미지 없음) placeholder는 16:9 비율 박스 */
+.sbw-canvas.is-empty{ width:min(100%, 1100px); }
+.sbw-canvas.is-empty .sbw-canvas-placeholder{
+  display:grid; place-items:center;
+  aspect-ratio:16/9; width:100%;
+  color:#667; background:
+    repeating-linear-gradient(45deg, #f7f9fb 0 8px, #f1f4f7 8px 16px);
+  font-weight:900; letter-spacing:.2px;
+}/* ★ 메인 카드 이미지는 다 보이도록 */
+.sbw-canvas-img{ display:block; width:auto; height:auto; max-width:100%; max-height:70vh; object-fit:contain; object-position:center; background:#000; }
 
 .sbw-canvas-placeholder{
-  width:100%; height:100%;
-  display:flex; align-items:center; justify-content:center;
-  color:#98a2b3; font-size:clamp(20px, 3.2vw, 42px); font-weight:600;
+  display:grid; place-items:center; aspect-ratio:16/9; width:100%;
+  color:#667; background:repeating-linear-gradient(45deg, #f7f9fb 0 8px, #f1f4f7 8px 16px);
+  font-weight:900; letter-spacing:.2px;
 }
 
 /* Overlay FABs */
@@ -898,6 +926,11 @@ input[disabled]{ background:#f6f8f6; color:#667; cursor:not-allowed }
 /* =========================================================
    11) PromptDock (공통 최소셋)
    ========================================================= */
+:root{
+  /* …기존 토큰… */
+  --aiw-z-fab: 2300;   /* 결과 FAB 버튼 */
+  --aiw-z-dock: 3000;  /* 프롬프트 도크(항상 FAB 위) */
+}
 .prompt-dock .dock-header{ display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
 .prompt-dock .dock-actions{ display:flex; align-items:center; gap:.5rem; }
 .prompt-dock .btn-tools{
@@ -915,15 +948,44 @@ input[disabled]{ background:#f6f8f6; color:#667; cursor:not-allowed }
 .prompt-dock .error-text{ color:#c00; }
 
 /* Dock 버튼 공통 */
-.dock .dock-actions{ display:flex; align-items:center; gap:.5rem; justify-content:flex-end; }
-.dock .dock-btn{
-  display:inline-flex; align-items:center; gap:.4rem;
-  padding:.5rem .9rem; border-radius:12px;
-  font-size:.95rem; line-height:1;
-  border:1px solid transparent; background:#fff; color:#111;
-  transition: background .15s, box-shadow .15s, border-color .15s, opacity .15s;
-  cursor:pointer;
+
+.dock .dock-actions{
+  grid-column: 2; grid-row: 1;
+  /* 버튼 2열 그리드 */
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: minmax(36px, auto);
+  gap: .5rem;
+
+  /* dock-inner 밖으로 절대 안 나가게 */
+  width: 100%;
+  min-width: 0;
+  align-content: start;
 }
+.dock .dock-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  padding: .45rem .7rem;            /* 살짝 컴팩트 */
+  border-radius: 10px;
+  font-size: .9rem;
+  line-height: 1.25;
+  border: 1px solid transparent;
+  background: #fff;
+  color: #111;
+  transition: background .15s, box-shadow .15s, border-color .15s, opacity .15s;
+  cursor: pointer;
+
+  /* 라벨 줄바꿈 정책 */
+  white-space: normal;              /* 기본은 가로 1줄 → 좁아지면 2줄까지 */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  overflow: hidden;
+  max-height: calc(1.25em * 2 + 6px); /* 2줄 + 약간의 패딩 보정 */
+  width: 100%;                        /* 그리드 셀 폭 채우기 */
+}
+
 .dock .dock-btn:focus-visible{ outline:2px solid #7ED957; outline-offset:2px; }
 .dock .dock-btn--ghost{ border-color:#e6e9ef; background:#fff; color:#111; }
 .dock .dock-btn--ghost:hover{ background:#f7f9fb; }
@@ -931,13 +993,20 @@ input[disabled]{ background:#f6f8f6; color:#667; cursor:not-allowed }
 .dock .dock-btn--primary{ background:var(--orange,#ff7a00); color:#fff; border-color:transparent; }
 .dock .dock-btn--primary:hover{ filter:brightness(.95); }
 .dock .dock-btn[disabled]{ opacity:.6; cursor:not-allowed; }
+.dock .dock-btn svg,
+.dock .dock-btn i{ flex-shrink: 0; }
 
-/* 업로드 타일 */
-.dock .dock-assets{ margin-bottom:.5rem; }
+/* 업로드 타일 */ 
+.dock .dock-assets{
+  grid-column: 1; grid-row: 1;
+  margin: 0;
+  min-width: 0;
+}
 .dock .init-tile{
   width:120px; height:120px; border-radius:16px;
   border:2px dashed #cfd6e4; background:#fff; position:relative;
   display:flex; align-items:center; justify-content:center; cursor:pointer;
+  z-index: 2900;
 }
 .dock .init-tile:hover{ background:#f8fafc; }
 .dock .init-tile .init-empty{ text-align:center; user-select:none; color:#6b7280; }
@@ -1048,16 +1117,20 @@ input[disabled]{ background:#f6f8f6; color:#667; cursor:not-allowed }
 
 /* 가운데 열(그리드 자식)에서 래퍼를 중앙 정렬 + 폭 클램프 */
 .sbw-canvas-wrap{
-  width: min(100%, 1100px);
-  justify-self: center;
-  margin-inline: auto;
+  position: relative;
+  width:100%;
+  /* 항상 중앙 정렬 */
+  /* display:grid;              */
+  place-items:center;
+  flex-direction: column;
 }
-
 /* 캔버스는 래퍼 폭 100% 채움 (좌측 붙지 않게) */
 .sbw-canvas{
   width: 100%;
   max-width: none;
   margin-inline: auto;
+  position: relative;
+
 }
 
 
@@ -1283,8 +1356,11 @@ html, body{
 .result-panel,
 .bottom-sheet,
 .prompt-dock{
-  padding-bottom: max(8px, var(--safe-bottom));
+  position: fixed;   /* 이미 fixed가 아니면 권장 */
+  left: 0; right: 0; bottom: 0;
+  z-index: var(--aiw-z-dock) !important;
 }
+
 .canvas-stage{
   contain: layout paint size style;
   will-change: transform;
@@ -1293,6 +1369,12 @@ html, body{
 /* =========================================================
    Result Panel (통합 최종판) — .aiw-result-* / .result-* 동시 지원
    ========================================================= */
+
+:root{
+/* ...기존... */
+--aiw-z-viewport: 2200; /* 결과 뷰포트(항상 FAB보다 낮게) */
+--aiw-z-fab:      2300; /* 결과 FAB 버튼(항상 가장 위) */
+}
 
 /* 스크림 */
 .aiw-result-scrim,
@@ -1358,6 +1440,7 @@ html, body{
   position: relative; flex: 1 1 auto; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
   background: var(--bg, #fff);
+  
 }
 .aiw-result-image{
   max-width: 90vw; max-height: 85vh;
@@ -1369,13 +1452,13 @@ html, body{
 /* FAB(우하단) — 열림/닫힘 모두 가시성 보장 */
 .aiw-fab-result{
   position: fixed; right: 16px; bottom: 16px;
-  z-index: var(--aiw-z-fab) !important;
   padding: 10px 14px; border-radius: 999px;
   background: var(--orange, #ff7a00); color: #fff;
   border: 0; box-shadow: 0 6px 20px rgba(0,0,0,.15);
   font-weight: 700; letter-spacing: .2px;
   display: inline-flex; align-items: center; justify-content: center;
   opacity: 1 !important; visibility: visible !important; pointer-events: auto !important;
+  z-index: 1500;
 }
 .aiw-fab-result[aria-pressed="true"]{
   background: #444 !important;
@@ -1384,7 +1467,7 @@ html, body{
   visibility: visible !important;
   pointer-events: auto !important;
 }
-
+.aiw-fab-result{ isolation: isolate; }
 /* 다크 모드 */
 @media (prefers-color-scheme: dark) {
   .aiw-result-scrim { background: rgba(0,0,0,.5); }
@@ -1522,3 +1605,21 @@ html, body{
   color: var(--ink, #1b1f23) !important;
 }
 
+
+
+/* 이미지가 있을 때 자막 기준 컨테이너 */
+.sbw-media{
+  position: relative;
+}
+
+/* 이미지가 없을 때(플레이스홀더)도 내부 기준을 갖게 함 */
+.sbw-canvas-placeholder{
+  position: relative;           /* ← 자막의 absolute 기준 */
+  width:100%; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  color:#98a2b3; font-size:clamp(20px, 3.2vw, 42px); font-weight:600;
+}
+
+
+/* Day4: K-Sampler 적용 버튼 브랜드 오렌지 고정 */
+.modal .btn.btn-warning, .dock-btn.dock-btn--primary { background: var(--orange,#ff7a00) !important; border-color: var(--orange,#ff7a00) !important; color:#fff !important; }

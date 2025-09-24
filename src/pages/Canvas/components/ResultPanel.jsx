@@ -48,12 +48,8 @@ export default function ResultPanel({
     ];
     targets.forEach(el => {
       if (!el) return;
-      const active = document.activeElement;
-      const containsFocus = active && (el === active || el.contains(active));
-      if (!containsFocus) {
-        el.setAttribute('inert', '');
-        el.setAttribute('aria-hidden', 'true');
-      }
+      el.setAttribute('inert', '');
+      el.setAttribute('aria-hidden', 'true');
     });
     return () => {
       targets.forEach(el => {

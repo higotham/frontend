@@ -1,18 +1,28 @@
-import React from 'react';
+/* src/pages/Canvas/components/GuideOverlay.jsx */
 
-/**
- * GuideOverlay
- * - Stage 위에 “항상” 떠 있는 점자/가이드 오버레이
- * - 사라짐 방지: 부모에 isolation:isolate, 오버레이 z-index 고정
- */
-export default function GuideOverlay({ show = true, children = null }) {
-  if (!show) return null;
+export default function GuideOverlay({
+  visible = true,
+  spacing = 12,
+  dot = 1,
+  opacity = 0.35,
+  showCenter = true,
+  blend = 'normal', // 필요 시에만 'multiply'로 전달
+}) {
+  if (!visible) return null;
   return (
-    <div className="aiw-guide-container">
-      <div className="aiw-guide-overlay" aria-hidden>
-        <div className="dotgrid" />
-        {children /* 필요하면 라벨/가이드 추가 */}
-      </div>
+    <div
+      className="aiw-guide-overlay"
+      aria-hidden="true"
+      role="presentation"
+      style={{
+        '--guide-spacing': `${spacing}px`,
+        '--guide-dot': `${dot}px`,
+        '--guide-opacity': opacity,
+        pointerEvents: 'none',     // 인라인 보강
+        mixBlendMode: blend,       // 기본 normal
+      }}
+    >
+      {showCenter && <div className="aiw-guide-center" aria-hidden="true" style={{ pointerEvents:'none' }} />}
     </div>
   );
 }

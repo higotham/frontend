@@ -431,19 +431,3 @@ export default function useCanvasDrawing({
     undo, clear, historyCount, toDataURL, cursor, loadFromDataURL, setAspectRatio,
   };
 }
-
-// ────────────────────────────────────────── Offscreen brush tip (perf)
-function getBrushTipCanvas(sizePx=16){
-  const s = Math.max(2, Math.round(sizePx));
-  const key = '__brush_tip_'+s;
-  if (!window[key]){
-    const oc = document.createElement('canvas');
-    oc.width = oc.height = s;
-    const octx = oc.getContext('2d');
-    const r = s/2;
-    octx.beginPath(); octx.arc(r, r, r, 0, Math.PI*2);
-    octx.fillStyle = '#000'; octx.fill();
-    window[key] = oc;
-  }
-  return window[key];
-}
