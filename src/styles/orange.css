@@ -1621,5 +1621,10 @@ html, body{
 }
 
 
-/* Day4: K-Sampler 적용 버튼 브랜드 오렌지 고정 */
-.modal .btn.btn-warning, .dock-btn.dock-btn--primary { background: var(--orange,#ff7a00) !important; border-color: var(--orange,#ff7a00) !important; color:#fff !important; }
+/* Day5: 스토리보드 미디어 영역 가시성 확대 */
+.sbw-media{
+  position: relative;
+  display:flex; align-items:center; justify-content:center;
+  min-height: clamp(160px, 26vh, 420px);
+  padding: 12px;
+}
