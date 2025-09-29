@@ -1,12 +1,31 @@
-# React + Vite
+# Gotham ✨
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<img width="1717" height="890" alt="image" src="./images/gotham.webp" />
 
-Currently, two official plugins are available:
+## 📂 프로젝트 문서 (Project Documents)
+프로젝트의 기획, 설계, 분석 과정에서 작성된 주요 산출물입니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 주요 기능
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠️ 기술 스택
+
+| 구분 | 기술 |
+| :--- | :--- |
+| **Frontend** | `React`, `Vite`, `JavaScript`, `Bootstrap` |
+| **Backend** | `Python`, `FastAPI`, `uv`, `Comfyui` |
+| **AI Models** | • **LLM**: `GPT-OSS 20B`<br>• **Image**: `Flux`<br>• **Video**: `Wan` |
+| **Deployment** | • **Frontend**: `Cloudflare Pages`<br>• **Backend**: `Render` |
+| **Version Control** | `Git`, `GitHub` |
+| **Collaboration** | `Discord` |
+
+<br>
+
+## ⚙️ 아키텍처
+
+
+## 🧑‍💻 팀원
+| 팀장 | 팀원 | 팀원 |
+|:-----:|:--------:|:---------:|
+| [<img src="https://github.com/CHOIBEAR.png" width="80" alt="최동근"/>](https://github.com/CHOIBEAR) | [<img src="https://github.com/kobryant8.png" width="80" alt="주형준"/>](https://github.com/kobryant8) | [<img src="https://github.com/omni0123.png" width="80" alt="박경민"/>](https://github.com/omni0123)  |
+| [최동근](https://github.com/CHOIBEAR) | [주형준](https://github.com/kobryant8) | [박경민](https://github.com/omni0123) |
