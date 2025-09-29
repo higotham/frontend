@@ -1620,11 +1620,3 @@ html, body{
   color:#98a2b3; font-size:clamp(20px, 3.2vw, 42px); font-weight:600;
 }
 
-
-/* Day5: 스토리보드 미디어 영역 가시성 확대 */
-.sbw-media{
-  position: relative;
-  display:flex; align-items:center; justify-content:center;
-  min-height: clamp(160px, 26vh, 420px);
-  padding: 12px;
-}

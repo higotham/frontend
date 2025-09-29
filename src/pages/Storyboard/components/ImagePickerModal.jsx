@@ -4,7 +4,6 @@ import Modal from 'react-bootstrap/Modal';
 import { useRoot } from '@/services/core/RootProvider.jsx';
 import api from '@/services/network/api.js';
 import { getModelLabel } from '@/config/models.js';
-import { getModelValue } from '@/config/models.js';
 import { getAspectLabel } from '@/config/aspects.js';
 
 export default function ImagePickerModal({ show, onClose, onSelect }) {
@@ -21,15 +20,9 @@ export default function ImagePickerModal({ show, onClose, onSelect }) {
   const fetchList = useCallback(async (qParam = '', qByParam = 0) => {
     try {
       setLoading(true);
-      // Day5: 모델 검색어를 value로 정규화
-      let qFixed = qParam;
-      if (Number(qByParam) === 1) {
-        const v = getModelValue(String(qParam).trim());
-        qFixed = v !== -1 ? String(v) : String(qParam).trim();
-      }
       const params = {
         cursor: null,
-        q: qFixed,
+        q: qParam,
         qBy: Number(qByParam),
         aspect: -1,
         sort: 'newest',
